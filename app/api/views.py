@@ -1,4 +1,4 @@
-from fastapi import UploadFile, APIRouter, Depends, HTTPException, Response
+from fastapi import UploadFile, APIRouter, Depends, HTTPException, Response, Request
 from typing import List, Dict
 from sqlalchemy.orm import Session
 from app.api.schemas import VoiceSchema, TextToSpeechSchema, CreateVoiceSchema, CharacterSchema, TranscribeAudioSchema
@@ -59,8 +59,12 @@ async def text_to_speech(text: TextToSpeechSchema) -> Recording:
 
 ### Whisper API
 @router.post("/transcribe-audio")
-async def speech_to_text(audio_file: UploadFile) -> Transcription:
+async def speech_to_text(request: Request, audio_file: UploadFile) -> Transcription:
     # DB Call
+    print(request)
+    print(request.headers)
+    body = await request.body()
+    print(body)
     contents = audio_file.file.read()
     transcript = WhisperController().whisper_to_text_bytes(file=contents)
     return transcript
