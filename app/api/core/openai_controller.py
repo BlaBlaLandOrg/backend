@@ -1,6 +1,7 @@
 import os
 import openai
 from typing import Dict, List
+import json
 
 class OpenaiController:
     """
@@ -10,6 +11,7 @@ class OpenaiController:
     def __init__(self, messages: List[Dict[str, str]], api_key: str = None):
         openai.api_key = os.getenv("OPENAI_API_KEY") if not api_key else api_key
         self.messages = messages
+        self.messages = [json.loads(message.json()) for message in messages]
 
     def answer(self):
         response = openai.ChatCompletion.create(
