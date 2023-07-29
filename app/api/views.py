@@ -1,12 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from typing import List, Dict
 from sqlalchemy.orm import Session
-from app.api.schemas import VoiceSchema, TextToSpeechSchema, CreateVoiceSchema, CharacterSchema
+from app.api.schemas import VoiceSchema, TextToSpeechSchema, CreateVoiceSchema, CharacterSchema, TranscribeAudioSchema
 from app.api.core.whisperapi_controller import WhisperController
 from app.api.core.elevenlabs_controller import ElevenlabsController
 from app.api.core.openai_controller import OpenaiController
 from app.api.core.models import Recording, Transcription, Message
 from app.database.controller import SessionLocal, engine
+import base64
+import os
+import imghdr
+
 
 router = APIRouter()
 
@@ -55,7 +59,7 @@ async def text_to_speech(text: TextToSpeechSchema) -> Recording:
 
 ### Whisper API
 @router.post("/transcribe-audio")
-async def speech_to_text(audio_file: TextToSpeechSchema) -> Transcription:
+async def speech_to_text(audio_file: TranscribeAudioSchema) -> Transcription:
     # DB Call
     contents = await audio_file.audio_file.read()
     transcript = WhisperController().whisper_to_text_bytes(file=contents)
@@ -74,3 +78,63 @@ async def generate_text(messages: List[Message]) -> str:
 def read_all_characters(db: Session = Depends(get_db)):
     # DB Call
     return characters_db
+
+
+@router.get("/get-image/{id}")
+def get_image(id: str, db: Session = Depends(get_db)):
+    from app.database.models import Character
+    character = db.query(Character).filter(Character.id == id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+
+    img_type = imghdr.what(None, h=character.avatar_data)
+    if not img_type:
+        raise HTTPException(status_code=500, detail="Could not determine image type")
+
+    image_data = base64.b64encode(character.avatar_data).decode("utf-8")
+    return Response(content=base64.b64decode(image_data), media_type=f"image/{img_type}")
+
+
+### Internal Mock
+@router.get("/character-mock")
+def characters_mock(db: Session = Depends(get_db)):
+    from app.database.models import Character, Voice
+
+    def read_image_file(file_path):
+        with open(file_path, 'rb') as file:
+            return file.read()
+
+
+    # create voices
+    bob = Voice(name='Bob')
+    alice = Voice(name='Alice')
+    eve = Voice(name='Eve')
+
+    db.add(bob)
+    db.add(alice)
+    db.add(eve)
+
+    db.flush()
+
+    # create characters
+    char1 = Character(name='Char1', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/nisonco-pr-and-seo-yIRdUr6hIvQ-unsplash.jpg"), description='The first character',
+                      labels='hero, male', rating=5, voice_id=bob.id)
+    char2 = Character(name='Char2', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/nisonco-pr-and-seo-yIRdUr6hIvQ-unsplash.jpg"), description='The second character',
+                      labels='villain, female', rating=4, voice_id=alice.id)
+    char3 = Character(name='Char3', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/nisonco-pr-and-seo-yIRdUr6hIvQ-unsplash.jpg"), description='The third character',
+                      labels='sidekick, female', rating=5, voice_id=eve.id)
+    char4 = Character(name='Char4', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/nisonco-pr-and-seo-yIRdUr6hIvQ-unsplash.jpg"), description='The fourth character',
+                      labels='hero, male', rating=4, voice_id=bob.id)
+
+    db.add(char1)
+    db.add(char2)
+    db.add(char3)
+    db.add(char4)
+
+
+    # commit the transaction
+    db.commit()
+
+
+
+

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, LargeBinary
 from sqlalchemy.orm import relationship
 from .controller import Base
 
@@ -21,7 +21,7 @@ class Character(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
-    avatar_url = Column(String)
+    avatar_data = Column(LargeBinary)
     description = Column(String)
     labels = Column(String)
     rating = Column(Integer)

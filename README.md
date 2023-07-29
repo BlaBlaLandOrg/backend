@@ -8,7 +8,7 @@ BlaBlaLand backend
 
 SET ENV VARS: `ELEVEN_API_KEY`, `OPENAI_API_KEY"`, `ASSEMBLYAI_API_KEY`
 
-run PostgreSQL: `docker run --name blablapostgres -e POSTGRES_PASSWORD=postgres -d postgres:15.3-bullseye
+run PostgreSQL: `docker run --name blablapostgres -e POSTGRES_PASSWORD=postgres -d postgres:15.3-bullseye`
 `
 
 # Run
