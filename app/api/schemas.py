@@ -1,10 +1,16 @@
 from pydantic import BaseModel
 from fastapi import UploadFile
-
+from typing import List
 
 class CharacterSchema(BaseModel):
     name: str
     rating: int
+
+class CreateCharacterSchema(BaseModel):
+    name: str
+    files: List[UploadFile]
+    description: str
+    labels: List[str]
 
 class TextToSpeachSchema(BaseModel):
     text: str

@@ -1,15 +1,20 @@
 from elevenlabs import get_api_key
 from elevenlabs import voices as elevenlabs_voices
 from elevenlabs.api.voice import Voice
-from elevenlabs import generate, play
+from elevenlabs import generate, play, clone
+from fastapi import UploadFile
+from typing import List
 import json
 import os
 import uuid
 import base64
-from models import Recording
+from .models import Recording
 
 
 class ElevenlabsController:
+
+    def __init__(self):
+        self.header = {"xi-api-key": get_api_key()}
 
     @staticmethod
     def list_voices():
@@ -35,9 +40,12 @@ class ElevenlabsController:
         audio_base64 = base64.b64encode(audio).decode()
         return Recording(path=file_id, model=model, bytes=audio_base64).json()
 
-
+    @staticmethod
+    def create_character(name: str, files: List[UploadFile], description: str, labels: List[str]) -> str:
+        creation = clone(name, files, description, labels)
+        return creation
 
 if __name__ == "__main__":
     e = ElevenlabsController()
-    # print(e.list_voices())
-    print(e.text_to_speach(text="Hallo ich bin Patrick von Blablaland", voice_name="Rachel"))
+    print(e.list_voices())
+    # print(e.text_to_speach(text="Hallo ich bin Patrick von Blablaland", voice_name="Rachel"))
