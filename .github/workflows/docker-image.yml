@@ -38,11 +38,21 @@ jobs:
         install -m 600 -D /dev/null ~/.ssh/id_rsa
         echo "${{ secrets.SSH_SERVER_KEY }}" > ~/.ssh/id_rsa
         echo "${{ secrets.KNOWN_HOST }}" > ~/.ssh/known_hosts
+    - name: Run postgres startup step
+      run: |
+        ssh  -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "docker stop postgres ; \
+        docker rm postgres ; \
+        docker run --name postgres -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+        -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
+        -d -p 5432:5432 postgres:15.3-bullseye"
     - name: Run deploy step
       run: |
         ssh  -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "docker stop backend ; \
         docker rm backend ; \
-        docker run --name backend -e ELEVEN_API_KEY=${{ secrets.ELEVEN_API_KEY }} -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
-         -d -p 8000:8000 casraw/blablaland-backend:${{ github.sha }}"
+        docker run --name backend -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+        -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
+        -e POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
+        -e ELEVEN_API_KEY=${{ secrets.ELEVEN_API_KEY }} -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+        -d -p 8000:8000 casraw/blablaland-backend:${{ github.sha }}"
               
 
