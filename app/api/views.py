@@ -61,11 +61,7 @@ async def text_to_speech(text: TextToSpeechSchema) -> Recording:
 @router.post("/transcribe-audio")
 async def speech_to_text(request: Request, audio_file: UploadFile) -> Transcription:
     # DB Call
-    print(request)
-    print(request.headers)
-    body = await request.body()
-    print(body)
-    contents = audio_file.file.read()
+    contents = audio_file.file
     transcript = WhisperController().whisper_to_text_bytes(file=contents)
     return transcript
 

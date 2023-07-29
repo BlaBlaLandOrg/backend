@@ -14,19 +14,19 @@ class WhisperController:
         openai.api_key = self.openai_api_key
         audio_file = open(f"{os.path.abspath(os.getcwd())}/{filename}", "rb")
         transcript = openai.Audio.transcribe("whisper-1", audio_file)
-        print(transcript)
 
     def whisper_to_text_bytes(self, file: bytes):
-        with tempfile.NamedTemporaryFile(delete=True) as tmp_file:
+        with tempfile.NamedTemporaryFile(delete=False, suffix="test.mp3") as tmp_file:
             content = file.read()
             tmp_file.write(content)
-            tmp_file.flush()
-            tmp_file.close()
-
-            with open(tmp_file.name, "rb") as audio_file:
+            with open(f"{tmp_file.name}", "rb") as audio_file:
                 openai.api_key = self.openai_api_key
-                transcript = Transcription(transcript=openai.Audio.transcribe("whisper-1", audio_file))
+                transcript = transcript=openai.Audio.transcribe("whisper-1", audio_file)["text"]
+                transcript = Transcription(text=transcript)
                 return transcript
+
+
+
 
 
 
