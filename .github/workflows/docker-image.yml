@@ -40,6 +40,6 @@ jobs:
         echo "${{ secrets.KNOWN_HOST }}" > ~/.ssh/known_hosts
     - name: Run deploy step
       run: |
-        ssh  -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "docker stop backend ; docker rm backend ; docker run --name backend  -d -p 8080:8080 casraw/blablaland-backend:${{ github.sha }}"
+        ssh  -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "docker stop backend ; docker rm backend ; docker run --name backend  -d -p 8000:8000 casraw/blablaland-backend:${{ github.sha }}"
               
 
