@@ -2,11 +2,12 @@ from pydantic import BaseModel
 from fastapi import UploadFile
 from typing import List
 
-class CharacterSchema(BaseModel):
-    name: str
-    rating: int
 
-class CreateCharacterSchema(BaseModel):
+### Elevenlabs
+class VoiceSchema(BaseModel):
+    name: str
+
+class CreateVoiceSchema(BaseModel):
     name: str
     files: List[UploadFile]
     description: str
@@ -17,5 +18,18 @@ class TextToSpeechSchema(BaseModel):
     voice_name: str
     model: str = "eleven_multilingual_v1"
 
+
+### Whisper
 class TranscribeAudioSchema(BaseModel):
     audio_file: UploadFile
+
+
+### Internal
+class CharacterSchema(BaseModel):
+    id: str
+    name: str
+    avatar_url: str
+    description: str
+    labels: List[str]
+    rating: int
+    voice_schema: VoiceSchema

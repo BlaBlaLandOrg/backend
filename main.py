@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 from app.routes import router as api_router
 from fastapi.middleware.cors import CORSMiddleware
+from app.database.controller import SessionLocal, engine
+from app.database.models import Base
 
+# Create all the tables in the database according to the models
+Base.metadata.create_all(bind=engine)
 
 def create_application() -> FastAPI:
     application = FastAPI(title="Blablaland")
@@ -9,6 +13,7 @@ def create_application() -> FastAPI:
     return application
 
 app = create_application()
+
 origins = ["*"]
 
 app.add_middleware(
@@ -17,7 +22,6 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"])
-
 
 if __name__ == "__main__":
     import uvicorn
