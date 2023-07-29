@@ -44,10 +44,10 @@ async def read_character_by_name(name: str):
 
 
 @router.post("/create-character")
-async def create_character(character: CreateVoiceSchema) -> str:
+async def create_character(files: List[UploadFile], character: CreateVoiceSchema) -> str:
     # DB CALL
-    files = [await file.read() for file in character.files]
-    character_id = ElevenlabsController().create_character(name=character.name, files=files,
+    _files = [await file.read() for file in files]
+    character_id = ElevenlabsController().create_character(name=character.name, files=_files,
                                                            description=character.description, labels=character.labels)
     return character_id
 
@@ -61,7 +61,7 @@ async def text_to_speech(text: TextToSpeechSchema) -> Recording:
 @router.post("/transcribe-audio")
 async def speech_to_text(audio_file: UploadFile) -> Transcription:
     # DB Call
-    contents = await audio_file.audio_file.read()
+    contents = await audio_file.read()
     transcript = WhisperController().whisper_to_text_bytes(file=contents)
     return transcript
 

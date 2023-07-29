@@ -9,7 +9,6 @@ class VoiceSchema(BaseModel):
 
 class CreateVoiceSchema(BaseModel):
     name: str
-    files: List[UploadFile]
     description: str
     labels: List[str]
 
