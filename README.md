@@ -6,7 +6,7 @@ BlaBlaLand backend
 
 `pip install -r requirements.txt`
 
-SET ENV VARS: `ELEVEN_API_KEY`, `OPENAI_API_KEY"`
+SET ENV VARS: `ELEVEN_API_KEY`, `OPENAI_API_KEY"`, `ASSEMBLYAI_API_KEY`
 
 # Run
 
