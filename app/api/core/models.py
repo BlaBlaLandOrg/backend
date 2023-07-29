@@ -9,3 +9,8 @@ class Recording(BaseModel):
 
 class Transcription(BaseModel):
     text: str
+
+
+class Message(BaseModel):
+    role: str
+    content: str
