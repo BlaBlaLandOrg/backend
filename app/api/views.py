@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 import tempfile
 from app.api.schemas import CharacterSchema, TextToSpeachSchema
-from app.api.core.models import Recording, TranscribeAudioSchema
-from app.api.core.assemblyai_controller import AssemblyAiController
+from app.api.core.whisperapi_controller import WhisperController
+from app.api.core.models import Recording, Transcription
 
 router = APIRouter()
 
@@ -32,13 +32,11 @@ async def text_to_speach(TexttoSpeach: TextToSpeachSchema):
     return Recording(path="path", model="model", bytes="bytes")
 
 @router.post("/transcribe-audio")
-async def speach_to_text(audio_file: TranscribeAudioSchema):
+async def speach_to_text(audio_file: TextToSpeachSchema) -> Transcription:
     # DB Call
     contents = await audio_file.audio_file.read()
+    transcript = WhisperController().whisper_to_text_bytes(file=contents)
 
-    with tempfile.NamedTemporaryFile(delete=True) as temp:
-        temp.write(contents)
-        transcription = AssemblyAiController.speach_to_text(audio_file=temp.name)
-        temp.flush()
+
 
     return "speach-to-text"

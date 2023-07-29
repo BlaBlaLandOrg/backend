@@ -6,3 +6,6 @@ class Recording(BaseModel):
     model: str
     bytes: str
 
+
+class Transcription(BaseModel):
+    text: str

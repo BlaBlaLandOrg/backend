@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from app.routes import router as api_router
+from fastapi.middleware.cors import CORSMiddleware
+
 
 def create_application() -> FastAPI:
     application = FastAPI(title="Blablaland")
@@ -7,6 +9,15 @@ def create_application() -> FastAPI:
     return application
 
 app = create_application()
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"])
+
 
 if __name__ == "__main__":
     import uvicorn

@@ -1,8 +1,9 @@
 import os
 import openai
 import tempfile
+from .models import Transcription
 
-class WhisperExporter:
+class WhisperController:
     """
     supports [".m4a", ".mp3", ".mp4", ".mpeg", ".mpga", ".wav", ".webm"]
     """
@@ -24,11 +25,11 @@ class WhisperExporter:
 
             with open(tmp_file.name, "rb") as audio_file:
                 openai.api_key = self.openai_api_key
-                transcript = openai.Audio.transcribe("whisper-1", audio_file)
+                transcript = Transcription(transcript=openai.Audio.transcribe("whisper-1", audio_file))
                 return transcript
 
 
 
 if __name__ == "__main__":
-    w = WhisperExporter()
+    w = WhisperController()
     w.whisper_to_text(filename="assets/audio/Rachel-3cf28684-8470-4277-b94e-a4f2645f74ad.mp3")
