@@ -76,8 +76,15 @@ async def generate_text(messages: List[Message]) -> Dict[str, str]:
 ### Internal
 @router.get("/list-all-character", response_model=List[CharacterSchema])
 def read_all_characters(db: Session = Depends(get_db)):
-    # DB Call
-    return characters_db
+    from app.database.models import Character
+    character = db.query(Character).all()
+
+    characters_in_schema = []
+    for i in character:
+        character = CharacterSchema(id=i.id, name=i.name, avatar_url=f"/api/get-image/{i.id}", description=i.description, labels=["Default"], rating=i.rating, voice_schema=VoiceSchema(name=i.voice.name))
+        characters_in_schema.append(character)
+
+    return characters_in_schema
 
 
 @router.get("/get-image/{id}")
