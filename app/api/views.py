@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Dict
 import tempfile
-from app.api.schemas import CharacterSchema, TextToSpeachSchema, CreateCharacterSchema
+from app.api.schemas import CharacterSchema, TextToSpeechSchema, CreateCharacterSchema
 from app.api.core.whisperapi_controller import WhisperController
 from app.api.core.elevenlabs_controller import ElevenlabsController
 from app.api.core.openai_controller import OpenaiController
@@ -40,14 +40,14 @@ async def create_character(character: CreateCharacterSchema) -> str:
     return character_id
 
 @router.post("/text-to-speech", response_model=Recording)
-async def text_to_speach(text: TextToSpeachSchema) -> Recording:
+async def text_to_speech(text: TextToSpeechSchema) -> Recording:
     # DB Call
-    return ElevenlabsController().text_to_speach(text=text.text, voice_name=text.voice_name, model=text.model)
+    return ElevenlabsController().text_to_speech(text=text.text, voice_name=text.voice_name, model=text.model)
 
 
 ### Whisper API
 @router.post("/transcribe-audio")
-async def speach_to_text(audio_file: TextToSpeachSchema) -> Transcription:
+async def speech_to_text(audio_file: TextToSpeechSchema) -> Transcription:
     # DB Call
     contents = await audio_file.audio_file.read()
     transcript = WhisperController().whisper_to_text_bytes(file=contents)

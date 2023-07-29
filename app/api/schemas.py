@@ -12,7 +12,7 @@ class CreateCharacterSchema(BaseModel):
     description: str
     labels: List[str]
 
-class TextToSpeachSchema(BaseModel):
+class TextToSpeechSchema(BaseModel):
     text: str
     voice_name: str
     model: str = "eleven_multilingual_v1"
