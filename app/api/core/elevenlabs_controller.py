@@ -5,7 +5,9 @@ from elevenlabs import generate, play
 import json
 import os
 import uuid
-# API key Env variable ELEVEN_API_KEY
+import base64
+from models import Recording
+
 
 class ElevenlabsController:
 
@@ -16,7 +18,8 @@ class ElevenlabsController:
         t = Voice(voice_id="test")
         return voices.json()
 
-    def text_to_speach(self, text: str, voice_name: str, model: str = "eleven_multilingual_v1"):
+    @staticmethod
+    def text_to_speach(text: str, voice_name: str, model: str = "eleven_multilingual_v1"):
         audio = generate(
             text=f"{text}",
             voice=f"{voice_name}",
@@ -24,14 +27,17 @@ class ElevenlabsController:
             api_key=get_api_key()
         )
 
-        file_id = f"{os.path.abspath(os.getcwd())}/assets/audio/{voice_name}-{uuid.uuid4()}.wav"
+        file_id = f"{os.path.abspath(os.getcwd())}/assets/audio/{voice_name}-{uuid.uuid4()}.mp3"
 
         with open(file_id, 'wb') as f:
             f.write(audio)
+
+        audio_base64 = base64.b64encode(audio).decode()
+        return Recording(path=file_id, model=model, bytes=audio_base64).json()
 
 
 
 if __name__ == "__main__":
     e = ElevenlabsController()
     # print(e.list_voices())
-    play(e.text_to_speach(text="Hallo ich bin Patrick von Blablaland", voice_name="Rachel"))
+    print(e.text_to_speach(text="Hallo ich bin Patrick von Blablaland", voice_name="Rachel"))

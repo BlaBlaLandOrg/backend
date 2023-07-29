@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
-from app.api.schemas import CharacterSchema
+from app.api.schemas import CharacterSchema, TextToSpeachSchema
+from app.api.core.models import Recording
 
 router = APIRouter()
 
@@ -22,3 +23,9 @@ async def read_character_by_name(name: str):
     # DB Call
     return characters_db[0]
     raise HTTPException(status_code=404, detail="Character not found")
+
+
+@router.post("/text-to-speach", response_model=Recording)
+async def text_to_speach(TexttoSpeach: TextToSpeachSchema):
+    # DB Call
+    return Recording(path="path", model="model", bytes="bytes")
