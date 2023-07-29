@@ -25,5 +25,5 @@ class Character(Base):
     description = Column(String)
     labels = Column(String)
     rating = Column(Integer)
-    voice_id = Column(Integer, ForeignKey('voices.id'))  # foreign key to Voice model
-    voice = relationship('Voice', back_populates='characters')  # relationship with Voice model
+    voice_id = Column(Integer, ForeignKey('voices.id'))
+    voice = relationship('Voice', back_populates='characters')
