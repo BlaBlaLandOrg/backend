@@ -9,7 +9,7 @@ import os
 import uuid
 import base64
 from .models import Recording
-from .lipsyncing.rhubarb-lipsyncer-linux.lipsync_controller import create_lip_sync_file
+from .lipsyncing.lipsyncer.lipsync_controller import create_lip_sync_file
 
 class ElevenlabsController:
 
