@@ -45,11 +45,11 @@ class ElevenlabsController:
 
         with open(file_id, 'wb') as f:
             f.write(audio)
-        # just for the returntype :D
-        lipsync = ['Just', 'for', 'fun']
-        if lip_sync:
-            wav_file = ElevenlabsController.convert_mp3_to_wav(file_id)
-            lipsync = create_lip_sync_file(wav_file, text)
+
+        wav_file = ElevenlabsController.convert_mp3_to_wav(file_id)
+        lipsync = create_lip_sync_file(wav_file, text)
+        print("lipsync")
+        print(lipsync)
         audio_base64 = base64.b64encode(audio).decode()
 
         return Recording(path=wav_file, model=model, bytes=audio_base64, lip_sync=lipsync)
