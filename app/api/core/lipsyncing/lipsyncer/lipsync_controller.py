@@ -16,7 +16,7 @@ def create_lip_sync_file(audio_path, text: str):
     with open('output.txt') as f:
         json_data = json.load(f)
         print(json_data)
-        return json_data["mouthCues"]
+        return json.dumps(json_data["mouthCues"])
 
 
 
