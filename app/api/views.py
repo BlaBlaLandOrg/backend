@@ -199,17 +199,17 @@ def characters_mock(db: Session = Depends(get_db)):
 
     # create characters
     char1 = Character(name='Blablaland-Monster', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/78d7f0d9-39a9-48a4-97aa-20d9c8341cc7.jpg"), description='The perfect monster for children',
-                       rating=5, voice_id=bob.id)
+                       rating=5, voice_id=bob.id, rating_count=1)
     char2 = Character(name='Grandmother', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/77c3274b-c2d5-40b3-adb1-7578dd1fa8cd.jpg"), description='The perfect grandmother',
-                       rating=4, voice_id=alice.id)
+                       rating=4, voice_id=alice.id, rating_count=1)
     char3 = Character(name='Surferboy', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/5c771a9e-2293-4315-be9b-866a381f07fe.jpg"), description='A sexy Surferboy from the Beach',
-                      rating=5, voice_id=eve.id)
+                      rating=5, voice_id=eve.id, rating_count=1)
     char4 = Character(name='Morgan Freeman', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/461b3391-d377-4bdd-a9f1-4f066e31c264.jpg"), description='The legend Morgan Freeman himself',
-                      rating=4, voice_id=bob.id)
+                      rating=4, voice_id=bob.id, rating_count=1)
     char5 = Character(name='Benjamin', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/002340e1-f4d7-400d-bc33-000f1a28dcb9.jpg"), description='Lets talk sports',
-                      rating=5, voice_id=benjamin.id)
+                      rating=5, voice_id=benjamin.id, rating_count=1)
     char6 = Character(name='Isabella', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/e684172f-f5fe-444f-a25d-488c0bc43bc6.jpg"), description='Have a conversation about your favorite book',
-                        rating=5, voice_id=alice.id)
+                        rating=5, voice_id=alice.id, rating_count=1)
     db.add(char1)
     db.add(char2)
     db.add(char3)
