@@ -126,6 +126,7 @@ async def get_recording(id: str):
         return StreamingResponse(io.BytesIO(await audio_path.read()), media_type="audio/mp3")
         # return FileResponse(audio_path, media_type=f"audio/mp3")
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail="An error occurred while processing the audio file.")
 
 @router.post("/character-update-rating/{id}")
