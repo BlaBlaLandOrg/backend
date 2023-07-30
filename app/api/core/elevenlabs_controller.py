@@ -8,7 +8,7 @@ import json
 import os
 import uuid
 import base64
-from .models import Recording
+from models import Recording
 
 
 class ElevenlabsController:
@@ -32,7 +32,7 @@ class ElevenlabsController:
             api_key=get_api_key()
         )
 
-        file_id = f"{os.path.abspath(os.getcwd())}/assets/audio/{voice_name}-{uuid.uuid4()}.mp3"
+        file_id = f"{os.path.abspath(os.getcwd())}/assets/audio/{voice_name}-{uuid.uuid4()}.ogg"
 
         with open(file_id, 'wb') as f:
             f.write(audio)
@@ -47,5 +47,5 @@ class ElevenlabsController:
 
 if __name__ == "__main__":
     e = ElevenlabsController()
-    print(e.list_voices())
-    # print(e.text_to_speech(text="Hallo ich bin Patrick von Blablaland", voice_name="Rachel"))
+    #print(e.list_voices())
+    print(e.text_to_speech(text="Hallo ich bin Patrick von Blablaland", voice_name="Rachel"))
