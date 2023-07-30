@@ -1,4 +1,4 @@
-from fastapi import UploadFile, APIRouter, Depends, HTTPException, Response, Request
+from fastapi import UploadFile, APIRouter, Depends, HTTPException, Response, Request, File, Form
 from starlette.responses import FileResponse
 from typing import List, Dict
 from sqlalchemy.orm import Session
@@ -6,12 +6,16 @@ from app.api.schemas import VoiceSchema, TextToSpeechSchema, CreateVoiceSchema, 
 from app.api.core.whisperapi_controller import WhisperController
 from app.api.core.elevenlabs_controller import ElevenlabsController
 from app.api.core.openai_controller import OpenaiController
+from app.api.core.stablediffusion_controller import generate_avatar
 from app.api.core.models import Recording, Transcription, Message
 from app.database.controller import SessionLocal, engine
+from fastapi.responses import StreamingResponse
 import base64
+import requests
 import os
 import imghdr
-
+from typing_extensions import Annotated
+import io
 
 router = APIRouter()
 
@@ -37,18 +41,31 @@ async def read_voice_by_name(name: str):
     voice_by_name = [voice for voice in voices if voice.name == name]
     return voice_by_name
 
-
 @router.post("/create-character")
-async def create_character(files: List[UploadFile], character: CreateVoiceSchema, db: Session = Depends(get_db)) -> str:
+async def create_character(
+    files: Annotated[List[UploadFile], File()],
+    character: Annotated[CreateVoiceSchema, Form()],
+    db: Session = Depends(get_db)
+):
     from ..database.models import Character
+
+    def read_image_from_url(url):
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an exception if the GET request did not succeed
+        return response.content
+
     _files = [await file.read() for file in files]
     character_id = ElevenlabsController().create_character(name=character.name, files=_files,
                                                            description=character.description, labels=character.labels)
-    # create avatar
-    # create avatar to base64
 
-    # character = Character(name=character.name, description=character.description, labels=character.labels, voice_id=character_id,
-    #                       avatar_data=)
+
+    avatar_url = generate_avatar(character.description)
+    avatar_data = read_image_from_url(avatar_url)
+    character = Character(name=character.name, description=character.description, labels=character.labels, voice_id=character_id,
+                          avatar_data=avatar_data, rating=0, rating_count=0)
+    db.add(character)
+    db.commit()
+
     return character_id
 
 @router.post("/text-to-speech")
@@ -103,10 +120,11 @@ def get_image(id: str, db: Session = Depends(get_db)):
     return Response(content=base64.b64decode(image_data), media_type=f"image/{img_type}")
 
 @router.get("/get-recording")
-def get_recording(id: str):
+async def get_recording(id: str):
     audio_path = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/audio/{id}.mp3"
     try:
-        return FileResponse(audio_path, media_type=f"audio/mp3")
+        return StreamingResponse(io.BytesIO(await audio_path.read()), media_type="application/octet-stream")
+        # return FileResponse(audio_path, media_type=f"audio/mp3")
     except Exception as e:
         raise HTTPException(status_code=500, detail="An error occurred while processing the audio file.")
 
