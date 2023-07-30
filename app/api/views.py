@@ -42,11 +42,7 @@ async def read_voice_by_name(name: str):
     return voice_by_name
 
 @router.post("/create-character")
-async def create_character(
-    files: Annotated[List[UploadFile], File()],
-    character: Annotated[CreateVoiceSchema, Form()],
-    db: Session = Depends(get_db)
-):
+async def create_character(files: List[UploadFile], character_name: str = Form(), character_description: str = Form(), character_labels: List[str] = Form(), db: Session = Depends(get_db)) -> CharacterSchema:
     from ..database.models import Character
 
     def read_image_from_url(url):
