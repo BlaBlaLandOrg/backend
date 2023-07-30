@@ -9,6 +9,7 @@ import os
 import uuid
 import base64
 from .models import Recording
+from pydub import AudioSegment
 from .lipsyncing.lipsyncer.lipsync_controller import create_lip_sync_file
 
 class ElevenlabsController:
@@ -24,6 +25,13 @@ class ElevenlabsController:
         return voices
 
     @staticmethod
+    def convert_mp3_to_wav(mp3_path):
+        audio = AudioSegment.from_mp3(mp3_path)
+        wav_path = mp3_path.replace(".mp3", ".wav")
+        audio.export(wav_path, format="wav")
+        return wav_path
+
+    @staticmethod
     def text_to_speech(text: str, voice_name: str, model: str = "eleven_multilingual_v1", lip_sync: bool = False):
         audio = generate(
             text=f"{text}",
@@ -32,13 +40,14 @@ class ElevenlabsController:
             api_key=get_api_key()
         )
 
-        file_id = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/audio/{voice_name}-{uuid.uuid4()}.ogg"
+        file_id = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/audio/{voice_name}-{uuid.uuid4()}.mp3"
 
         with open(file_id, 'wb') as f:
             f.write(audio)
 
         if lip_sync:
-            create_lip_sync_file(file_id, text)
+            wav_file = ElevenlabsController.convert_mp3_to_wav(file_id)
+            create_lip_sync_file(wav_file, text)
         audio_base64 = base64.b64encode(audio).decode()
         return Recording(path=file_id, model=model, bytes=audio_base64)
 

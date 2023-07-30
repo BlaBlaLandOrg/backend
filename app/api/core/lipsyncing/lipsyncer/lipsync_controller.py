@@ -9,7 +9,6 @@ def create_lip_sync_file(audio_path, text: str):
     with open(f"{file_path}", "w") as f:
         f.write(text)
         f.close()
-    print(os.path.abspath(os.getcwd()))
     command = f"{os.path.abspath(os.getcwd())}/app/api/core/lipsyncing/lipsyncer/rhubarb -o output.txt {audio_path} -f json -d {file_path} --extendedShapes GHX"
 
     subprocess.check_output(command.split(' '))
