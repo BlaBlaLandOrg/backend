@@ -162,7 +162,14 @@ def update_character_rating(id: str, rating: int, db: Session = Depends(get_db))
         raise HTTPException(status_code=404, detail="Character not found")
 
     rating_character = character.rating
-    rating_count = character.rating_count
+    try:
+        rating_count = character.rating_count
+        if rating_count is None:
+            rating_count = 0
+    except:
+        rating_count = 0
+
+
     new_rating = (rating_character * rating_count + rating) / (rating_count + 1)
     character.rating = new_rating
     db.commit()
