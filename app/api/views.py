@@ -1,4 +1,5 @@
 from fastapi import UploadFile, APIRouter, Depends, HTTPException, Response, Request
+from starlette.responses import FileResponse
 from typing import List, Dict
 from sqlalchemy.orm import Session
 from app.api.schemas import VoiceSchema, TextToSpeechSchema, CreateVoiceSchema, CharacterSchema, TranscribeAudioSchema
@@ -95,6 +96,15 @@ def get_image(id: str, db: Session = Depends(get_db)):
 
     image_data = base64.b64encode(character.avatar_data).decode("utf-8")
     return Response(content=base64.b64decode(image_data), media_type=f"image/{img_type}")
+
+@router.get("/get-recording/{id}")
+def get_recording(path: str):
+    audio_path = f"{path}"
+    audio_format = os.path.splitext(audio_path)[1][1:]
+    try:
+        return FileResponse(audio_path, media_type=f"audio/{audio_format}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An error occurred while processing the audio file.")
 
 @router.post("/character-update-rating/{id}")
 def update_character_rating(id: str, rating: int, db: Session = Depends(get_db)):
