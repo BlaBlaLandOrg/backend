@@ -1,12 +1,12 @@
 from pydantic import BaseModel
-from typing import Optional, Any
+from typing import Optional, Any, List
 
 
 class Recording(BaseModel):
     path: str
     model: str
     bytes: str
-    lipsync: Any
+    lipsync: List[Any]
 
 
 class Transcription(BaseModel):
