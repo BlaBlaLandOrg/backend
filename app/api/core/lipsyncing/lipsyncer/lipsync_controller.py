@@ -14,9 +14,8 @@ def create_lip_sync_file(audio_path, text: str):
     subprocess.check_output(command.split(' '))
 
     with open('output.txt') as f:
-        json_data = json.load(f)
-        print(json_data)
-        return json.dumps(json_data)
+        content = f.read()
+        return content
 
 
 
