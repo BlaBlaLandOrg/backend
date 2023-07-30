@@ -55,7 +55,7 @@ async def create_character(files: List[UploadFile], character: CreateVoiceSchema
 async def text_to_speech(text: TextToSpeechSchema) -> Recording:
     # DB Call
     return ElevenlabsController().text_to_speech(text=text.text, voice_name=text.voice_name, model=text.model,
-                                                 lipsync=text.lip_sync)
+                                                 lip_sync=text.lip_sync)
 
 
 ### Whisper API
