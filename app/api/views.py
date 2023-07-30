@@ -15,7 +15,6 @@ import requests
 import os
 import imghdr
 from typing_extensions import Annotated
-import io
 
 router = APIRouter()
 
@@ -124,7 +123,7 @@ async def get_recording(id: str):
     audio_path = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/audio/{id}.mp3"
     try:
         file = open(audio_path, "rb").read()
-        return StreamingResponse(io.BytesIO(content=file, media_type="audio/mp3"))
+        return StreamingResponse(content=file, media_type="audio/mp3"))
         # return FileResponse(audio_path, media_type=f"audio/mp3")
     except Exception as e:
         print(e)
