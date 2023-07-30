@@ -9,7 +9,7 @@ def generate_avatar(prompt: str):
     api_key = os.environ.get("STABLE_DIFFUSION_API_KEY")
     payload = json.dumps({
       "key": f"{api_key}",
-      "prompt": f"a avatar for which follows this description {prompt}",
+      "prompt": f"{prompt}",
       "negative_prompt": None,
       "width": "512",
       "height": "512",
