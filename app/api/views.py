@@ -39,7 +39,7 @@ async def read_voice_by_name(name: str):
 
 
 @router.post("/create-character")
-async def create_character(files: List[UploadFile], character: CreateVoiceSchema, db: Session = Depends(get_db())) -> str:
+async def create_character(files: List[UploadFile], character: CreateVoiceSchema, db: Session = Depends(get_db)) -> str:
     from ..database.models import Character
     _files = [await file.read() for file in files]
     character_id = ElevenlabsController().create_character(name=character.name, files=_files,
@@ -47,8 +47,8 @@ async def create_character(files: List[UploadFile], character: CreateVoiceSchema
     # create avatar
     # create avatar to base64
 
-    character = Character(name=character.name, description=character.description, labels=character.labels, voice_id=character_id,
-                          avatar_data=)
+    # character = Character(name=character.name, description=character.description, labels=character.labels, voice_id=character_id,
+    #                       avatar_data=)
     return character_id
 
 @router.post("/text-to-speech")
