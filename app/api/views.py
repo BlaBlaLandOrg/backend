@@ -101,6 +101,20 @@ def get_image(id: str, db: Session = Depends(get_db)):
     image_data = base64.b64encode(character.avatar_data).decode("utf-8")
     return Response(content=base64.b64decode(image_data), media_type=f"image/{img_type}")
 
+@router.post("/character-update-rating/{id}")
+def update_character_rating(id: str, rating: int, db: Session = Depends(get_db)):
+    from app.database.models import Character
+    character = db.query(Character).filter(Character.id == id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+
+    rating_character = character.rating
+    rating_count = character.rating_count
+    new_rating = (rating_character * rating_count + rating) / (rating_count + 1)
+    character.rating = new_rating
+    db.commit()
+    return {"message": "Rating updated", "new_rating": new_rating}
+
 
 ### Internal Mock
 @router.get("/character-mock")
