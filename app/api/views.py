@@ -14,13 +14,6 @@ import imghdr
 
 router = APIRouter()
 
-# mock data
-characters_db = [
-    {"name": "Alice", "rating": 10},
-    {"name": "Bob", "rating": 8},
-    {"name": "Charlie", "rating": 9},
-]
-
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -31,16 +24,17 @@ def get_db():
 
 ### Elevenlabs API
 @router.get("/list-all-voices", response_model=List[VoiceSchema])
-async def read_all_functionalities():
-    # DB Call
-    return characters_db
+async def read_all_voices():
+    voices = ElevenlabsController().list_voices()
+    voices = [VoiceSchema(name=voice.name) for voice in voices]
+    return voices
 
 
-@router.get("/list-character-by-name/{name}", response_model=VoiceSchema)
-async def read_character_by_name(name: str):
-    # DB Call
-    return characters_db[0]
-    raise HTTPException(status_code=404, detail="Character not found")
+@router.post("/list-voice-by-name/{name}")
+async def read_voice_by_name(name: str):
+    voices = ElevenlabsController().list_voices()
+    voice_by_name = [voice for voice in voices if voice.name == name]
+    return voice_by_name
 
 
 @router.post("/create-character")

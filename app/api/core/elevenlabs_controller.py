@@ -21,7 +21,7 @@ class ElevenlabsController:
         # pydantic models to json -> json.loads(voices.json())
         voices = elevenlabs_voices()
         t = Voice(voice_id="test")
-        return voices.json()
+        return voices
 
     @staticmethod
     def text_to_speech(text: str, voice_name: str, model: str = "eleven_multilingual_v1"):
