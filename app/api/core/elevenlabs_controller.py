@@ -16,7 +16,8 @@ from .lipsyncing.lipsyncer.lipsync_controller import create_lip_sync_file
 class ElevenlabsController:
 
     def __init__(self):
-        self.header = {"xi-api-key": get_api_key()}
+        self.api_key = os.environ.get("ELEVEN_API_KEY")
+        self.header = {"xi-api-key": self.api_key}
 
     @staticmethod
     def list_voices():
