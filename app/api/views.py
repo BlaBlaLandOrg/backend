@@ -129,6 +129,15 @@ async def get_recording(id: str):
         print(e)
         raise HTTPException(status_code=500, detail="An error occurred while processing the audio file.")
 
+@router.get("/get-recording2")
+async def get_recording(id: str):
+    audio_path = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/audio/{id}.mp3"
+    try:
+        return FileResponse(audio_path, media_type=f"audio/mp3")
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail="An error occurred while processing the audio file.")
+
 @router.post("/character-update-rating/{id}")
 def update_character_rating(id: str, rating: int, db: Session = Depends(get_db)):
     from app.database.models import Character
