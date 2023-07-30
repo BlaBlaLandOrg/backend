@@ -81,7 +81,7 @@ async def create_character(
     character = Character(name=name, description=description, voice_id=character_id["voice_id"],
                           avatar_data=avatar_data, rating=0, rating_count=0)
     # highest id + 1
-    ids = db.query(Character).filter(Character.name == name).all()
+    ids = db.query(Character).all()
     ids = max([id.id for id in ids])
     character.id = ids + 1
     db.add(character)
