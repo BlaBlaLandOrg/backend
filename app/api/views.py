@@ -104,7 +104,7 @@ def get_image(id: str, db: Session = Depends(get_db)):
 
 @router.get("/get-recording")
 def get_recording(id: str):
-    audio_path = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/{id}.mp3"
+    audio_path = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/audio/{id}.mp3"
     try:
         return FileResponse(audio_path, media_type=f"audio/mp3")
     except Exception as e:
