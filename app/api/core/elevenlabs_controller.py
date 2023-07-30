@@ -46,7 +46,7 @@ class ElevenlabsController:
         with open(file_id, 'wb') as f:
             f.write(audio)
         # just for the returntype :D
-        lip_sync = None
+        lipsync = None
         wav_file = file_id
         if lip_sync:
             wav_file = ElevenlabsController.convert_mp3_to_wav(file_id)
