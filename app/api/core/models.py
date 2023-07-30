@@ -6,7 +6,7 @@ class Recording(BaseModel):
     path: str
     model: str
     bytes: str
-    lipsync: Optional[Any] = None
+    lipsync: Any
 
 
 class Transcription(BaseModel):
