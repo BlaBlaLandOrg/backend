@@ -124,7 +124,7 @@ async def get_recording(id: str):
     audio_path = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/audio/{id}.mp3"
     try:
         file = open(audio_path, "rb").read()
-        return StreamingResponse(io.BytesIO(await file, media_type="audio/mp3"))
+        return StreamingResponse(io.BytesIO(file, media_type="audio/mp3"))
         # return FileResponse(audio_path, media_type=f"audio/mp3")
     except Exception as e:
         print(e)
