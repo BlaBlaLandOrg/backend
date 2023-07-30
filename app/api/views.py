@@ -68,7 +68,9 @@ async def create_character(
 
     character_id = ElevenlabsController().create_character(name=name, file_list=file_paths,
                                                            description=description)
+    print(character_id)
     voices = ElevenlabsController().list_voices()
+    print(voices)
     voice_by_name = [voice for voice in voices if voice.voice_id == character_id["voice_id"]]
     voice_by_name = voice_by_name[0]
     voice = Voice(name=voice_by_name.name, id=voice_by_name.voice_id)
