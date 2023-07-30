@@ -6,7 +6,7 @@ class Recording(BaseModel):
     path: str
     model: str
     bytes: str
-    lipsync = Json[Any]
+    lipsync: str
 
 
 class Transcription(BaseModel):
