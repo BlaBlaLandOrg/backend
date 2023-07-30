@@ -2,14 +2,15 @@ from elevenlabs import get_api_key
 from elevenlabs import voices as elevenlabs_voices
 from elevenlabs.api.voice import Voice
 from elevenlabs import generate, play, clone
-from fastapi import UploadFile
-from typing import List
+import io
+from typing import List, Dict
 import json
 import os
 import uuid
 import base64
 from .models import Recording
 from pydub import AudioSegment
+import requests
 from .lipsyncing.lipsyncer.lipsync_controller import create_lip_sync_file
 
 class ElevenlabsController:
@@ -56,11 +57,27 @@ class ElevenlabsController:
         return Recording(path=whole_id, model=model, bytes=audio_base64, lipsync=lipsync)
 
     @staticmethod
-    def create_character(name: str, files: List[UploadFile], description: str, labels: List[str]) -> str:
-        creation = clone(name, files, description, labels)
-        return creation
+    def create_character(name: str, file_list: List[str], description: str) -> str:
+        url = 'https://api.elevenlabs.io/v1/voices/add'
+        headers = {
+            'accept': 'application/json',
+            'xi-api-key': os.environ.get("ELEVENLABS_API_KEY"),
+        }
+
+
+        files = [('files', ("file", open(file_name, 'rb'), 'audio/mpeg')) for file_name in file_list]
+        # nevermind labels for now
+        data = {
+            'name': f'{name}',
+            'labels': '',
+            'description': f'{description}'
+        }
+
+        response = requests.post(url, headers=headers, data=data, files=files)
+
+        return response.json()
 
 if __name__ == "__main__":
     e = ElevenlabsController()
-    # print(e.list_voices())
+    print(e.list_voices())
     # print(e.text_to_speech(text="Hallo ich bin Patrick von Blablaland", voice_name="Rachel"))

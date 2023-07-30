@@ -8,7 +8,7 @@ class Voice(Base):
     """
     __tablename__ = "voices"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
     characters = relationship('Character', back_populates='voice')
 
@@ -23,8 +23,7 @@ class Character(Base):
     name = Column(String, unique=True, index=True)
     avatar_data = Column(LargeBinary)
     description = Column(String)
-    labels = Column(String)
     rating = Column(Integer)
     rating_count = Column(Integer)
-    voice_id = Column(Integer, ForeignKey('voices.id'))
+    voice_id = Column(String, ForeignKey('voices.id'))
     voice = relationship('Voice', back_populates='characters')

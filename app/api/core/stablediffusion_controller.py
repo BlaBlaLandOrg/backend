@@ -32,7 +32,6 @@ def generate_avatar(prompt: str):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
-
     return response.json()["output"][0]
 
 if __name__ == "__main__":
