@@ -40,8 +40,9 @@ class ElevenlabsController:
             model=f"{model}",
             api_key=get_api_key()
         )
-
-        file_id = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/audio/{voice_name}-{uuid.uuid4()}.mp3"
+        id = uuid.uuid4()
+        whole_id = f"{voice_name}-{id}"
+        file_id = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/audio/{whole_id}.mp3"
 
         with open(file_id, 'wb') as f:
             f.write(audio)
@@ -52,7 +53,7 @@ class ElevenlabsController:
             wav_file = ElevenlabsController.convert_mp3_to_wav(file_id)
             lipsync = create_lip_sync_file(wav_file, text)
         audio_base64 = base64.b64encode(audio).decode()
-        return Recording(path=wav_file, model=model, bytes=audio_base64, lipsync=lipsync)
+        return Recording(path=id, model=model, bytes=audio_base64, lipsync=lipsync)
 
     @staticmethod
     def create_character(name: str, files: List[UploadFile], description: str, labels: List[str]) -> str:

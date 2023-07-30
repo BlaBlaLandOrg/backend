@@ -6,7 +6,7 @@ BlaBlaLand backend
 
 `pip install -r requirements.txt`
 
-SET ENV VARS: `ELEVEN_API_KEY`, `OPENAI_API_KEY"`, `ASSEMBLYAI_API_KEY`
+SET ENV VARS: `ELEVEN_API_KEY`, `OPENAI_API_KEY"`, `ASSEMBLYAI_API_KEY`, `STABLE_DIFFUSION_API_KEY`
 
 run PostgreSQL: `docker run --name blablapostgres -e POSTGRES_PASSWORD=postgres -d postgres:15.3-bullseye`
 `

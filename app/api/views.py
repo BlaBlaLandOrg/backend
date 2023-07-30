@@ -39,11 +39,16 @@ async def read_voice_by_name(name: str):
 
 
 @router.post("/create-character")
-async def create_character(files: List[UploadFile], character: CreateVoiceSchema) -> str:
-    # DB CALL
+async def create_character(files: List[UploadFile], character: CreateVoiceSchema, db: Session = Depends(get_db())) -> str:
+    from ..database.models import Character
     _files = [await file.read() for file in files]
     character_id = ElevenlabsController().create_character(name=character.name, files=_files,
                                                            description=character.description, labels=character.labels)
+    # create avatar
+    # create avatar to base64
+
+    character = Character(name=character.name, description=character.description, labels=character.labels, voice_id=character_id,
+                          avatar_data=)
     return character_id
 
 @router.post("/text-to-speech")
@@ -97,12 +102,11 @@ def get_image(id: str, db: Session = Depends(get_db)):
     image_data = base64.b64encode(character.avatar_data).decode("utf-8")
     return Response(content=base64.b64decode(image_data), media_type=f"image/{img_type}")
 
-@router.get("/get-recording/{id}")
-def get_recording(path: str):
-    audio_path = f"{path}"
-    audio_format = os.path.splitext(audio_path)[1][1:]
+@router.get("/get-recording")
+def get_recording(id: str):
+    audio_path = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/{id}.mp3"
     try:
-        return FileResponse(audio_path, media_type=f"audio/{audio_format}")
+        return FileResponse(audio_path, media_type=f"audio/mp3")
     except Exception as e:
         raise HTTPException(status_code=500, detail="An error occurred while processing the audio file.")
 
