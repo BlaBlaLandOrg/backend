@@ -32,13 +32,13 @@ class ElevenlabsController:
             api_key=get_api_key()
         )
 
-        file_id = f"{os.path.abspath(os.getcwd())}/assets/audio/{voice_name}-{uuid.uuid4()}.mp3"
+        file_id = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/audio/{voice_name}-{uuid.uuid4()}.mp3"
 
         with open(file_id, 'wb') as f:
             f.write(audio)
 
         audio_base64 = base64.b64encode(audio).decode()
-        return Recording(path=file_id, model=model, bytes=audio_base64).json()
+        return Recording(path=file_id, model=model, bytes=audio_base64)
 
     @staticmethod
     def create_character(name: str, files: List[UploadFile], description: str, labels: List[str]) -> str:
