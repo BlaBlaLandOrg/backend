@@ -6,7 +6,7 @@ class Recording(BaseModel):
     path: str
     model: str
     bytes: str
-    lipsync: Json[List[Dict[str, Any]]] = None
+    lipsync: Any
 
 
 class Transcription(BaseModel):
