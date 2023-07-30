@@ -48,8 +48,6 @@ class ElevenlabsController:
 
         wav_file = ElevenlabsController.convert_mp3_to_wav(file_id)
 
-        print("lipsync")
-        print(lipsync)
         audio_base64 = base64.b64encode(audio).decode()
 
         return Recording(path=wav_file, model=model, bytes=audio_base64, lip_sync=create_lip_sync_file(wav_file, text))
