@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1
 FROM python:3.9
+RUN apt update ; apt install ffmpeg -y
 WORKDIR /code
 COPY ./requirements.txt /code/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
