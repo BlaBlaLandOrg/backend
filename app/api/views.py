@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import UploadFile, APIRouter, Depends, HTTPException, Response, Request
 from typing import List, Dict
 from sqlalchemy.orm import Session
 from app.api.schemas import VoiceSchema, TextToSpeechSchema, CreateVoiceSchema, CharacterSchema, TranscribeAudioSchema
@@ -14,13 +14,6 @@ import imghdr
 
 router = APIRouter()
 
-# mock data
-characters_db = [
-    {"name": "Alice", "rating": 10},
-    {"name": "Bob", "rating": 8},
-    {"name": "Charlie", "rating": 9},
-]
-
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -31,23 +24,24 @@ def get_db():
 
 ### Elevenlabs API
 @router.get("/list-all-voices", response_model=List[VoiceSchema])
-async def read_all_functionalities():
-    # DB Call
-    return characters_db
+async def read_all_voices():
+    voices = ElevenlabsController().list_voices()
+    voices = [VoiceSchema(name=voice.name) for voice in voices]
+    return voices
 
 
-@router.get("/list-character-by-name/{name}", response_model=VoiceSchema)
-async def read_character_by_name(name: str):
-    # DB Call
-    return characters_db[0]
-    raise HTTPException(status_code=404, detail="Character not found")
+@router.post("/list-voice-by-name/{name}")
+async def read_voice_by_name(name: str):
+    voices = ElevenlabsController().list_voices()
+    voice_by_name = [voice for voice in voices if voice.name == name]
+    return voice_by_name
 
 
 @router.post("/create-character")
-async def create_character(character: CreateVoiceSchema) -> str:
+async def create_character(files: List[UploadFile], character: CreateVoiceSchema) -> str:
     # DB CALL
-    files = [await file.read() for file in character.files]
-    character_id = ElevenlabsController().create_character(name=character.name, files=files,
+    _files = [await file.read() for file in files]
+    character_id = ElevenlabsController().create_character(name=character.name, files=_files,
                                                            description=character.description, labels=character.labels)
     return character_id
 
@@ -59,25 +53,32 @@ async def text_to_speech(text: TextToSpeechSchema) -> Recording:
 
 ### Whisper API
 @router.post("/transcribe-audio")
-async def speech_to_text(audio_file: TranscribeAudioSchema) -> Transcription:
+async def speech_to_text(request: Request, audio_file: UploadFile) -> Transcription:
     # DB Call
-    contents = await audio_file.audio_file.read()
+    contents = audio_file.file
     transcript = WhisperController().whisper_to_text_bytes(file=contents)
     return transcript
 
 
 ### OpenAI API
 @router.post("/generate-text")
-async def generate_text(messages: List[Message]) -> str:
+async def generate_text(messages: List[Message]) -> Dict[str, str]:
     # DB Call
-    return OpenaiController().answer(messages)
+    return OpenaiController(messages).answer()[0]
 
 
 ### Internal
 @router.get("/list-all-character", response_model=List[CharacterSchema])
 def read_all_characters(db: Session = Depends(get_db)):
-    # DB Call
-    return characters_db
+    from app.database.models import Character
+    character = db.query(Character).all()
+
+    characters_in_schema = []
+    for i in character:
+        character = CharacterSchema(id=i.id, name=i.name, avatar_url=f"/api/get-image/{i.id}", description=i.description, labels=["Default"], rating=i.rating, voice_schema=VoiceSchema(name=i.voice.name))
+        characters_in_schema.append(character)
+
+    return characters_in_schema
 
 
 @router.get("/get-image/{id}")
@@ -93,6 +94,20 @@ def get_image(id: str, db: Session = Depends(get_db)):
 
     image_data = base64.b64encode(character.avatar_data).decode("utf-8")
     return Response(content=base64.b64decode(image_data), media_type=f"image/{img_type}")
+
+@router.post("/character-update-rating/{id}")
+def update_character_rating(id: str, rating: int, db: Session = Depends(get_db)):
+    from app.database.models import Character
+    character = db.query(Character).filter(Character.id == id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+
+    rating_character = character.rating
+    rating_count = character.rating_count
+    new_rating = (rating_character * rating_count + rating) / (rating_count + 1)
+    character.rating = new_rating
+    db.commit()
+    return {"message": "Rating updated", "new_rating": new_rating}
 
 
 ### Internal Mock

@@ -8,7 +8,7 @@ import json
 import os
 import uuid
 import base64
-from models import Recording
+from .models import Recording
 
 
 class ElevenlabsController:
@@ -21,7 +21,7 @@ class ElevenlabsController:
         # pydantic models to json -> json.loads(voices.json())
         voices = elevenlabs_voices()
         t = Voice(voice_id="test")
-        return voices.json()
+        return voices
 
     @staticmethod
     def text_to_speech(text: str, voice_name: str, model: str = "eleven_multilingual_v1"):
@@ -32,13 +32,13 @@ class ElevenlabsController:
             api_key=get_api_key()
         )
 
-        file_id = f"{os.path.abspath(os.getcwd())}/assets/audio/{voice_name}-{uuid.uuid4()}.ogg"
+        file_id = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/audio/{voice_name}-{uuid.uuid4()}.mp3"
 
         with open(file_id, 'wb') as f:
             f.write(audio)
 
         audio_base64 = base64.b64encode(audio).decode()
-        return Recording(path=file_id, model=model, bytes=audio_base64).json()
+        return Recording(path=file_id, model=model, bytes=audio_base64)
 
     @staticmethod
     def create_character(name: str, files: List[UploadFile], description: str, labels: List[str]) -> str:
@@ -47,5 +47,5 @@ class ElevenlabsController:
 
 if __name__ == "__main__":
     e = ElevenlabsController()
-    #print(e.list_voices())
-    print(e.text_to_speech(text="Hallo ich bin Patrick von Blablaland", voice_name="Rachel"))
+    # print(e.list_voices())
+    # print(e.text_to_speech(text="Hallo ich bin Patrick von Blablaland", voice_name="Rachel"))
