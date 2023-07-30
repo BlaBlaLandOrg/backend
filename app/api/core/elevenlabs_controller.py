@@ -48,9 +48,9 @@ class ElevenlabsController:
 
         if lip_sync:
             wav_file = ElevenlabsController.convert_mp3_to_wav(file_id)
-            create_lip_sync_file(wav_file, text)
+            lipsync = create_lip_sync_file(wav_file, text)
         audio_base64 = base64.b64encode(audio).decode()
-        return Recording(path=wav_file, model=model, bytes=audio_base64)
+        return Recording(path=wav_file, model=model, bytes=audio_base64, lip_sync=lipsync)
 
     @staticmethod
     def create_character(name: str, files: List[UploadFile], description: str, labels: List[str]) -> str:
