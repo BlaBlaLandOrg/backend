@@ -21,7 +21,7 @@ class WhisperController:
             tmp_file.write(content)
             with open(f"{tmp_file.name}", "rb") as audio_file:
                 openai.api_key = self.openai_api_key
-                transcript = transcript=openai.Audio.transcribe("whisper-1", audio_file)["text"]
+                transcript = openai.Audio.transcribe("whisper-1", audio_file)["text"]
                 transcript = Transcription(text=transcript)
                 return transcript
 
