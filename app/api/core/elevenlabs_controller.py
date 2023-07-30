@@ -62,7 +62,7 @@ class ElevenlabsController:
         url = 'https://api.elevenlabs.io/v1/voices/add'
         headers = {
             'accept': 'application/json',
-            'xi-api-key': os.environ.get("ELEVENLABS_API_KEY"),
+            'xi-api-key': os.environ.get("ELEVEN_API_KEY"),
         }
 
 
