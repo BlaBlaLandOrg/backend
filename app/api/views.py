@@ -64,7 +64,7 @@ async def speech_to_text(request: Request, audio_file: UploadFile) -> Transcript
 @router.post("/generate-text")
 async def generate_text(messages: List[Message]) -> Dict[str, str]:
     # DB Call
-    return OpenaiController(messages).answer()
+    return OpenaiController(messages).answer()[0]
 
 
 ### Internal

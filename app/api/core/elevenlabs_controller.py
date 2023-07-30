@@ -47,5 +47,5 @@ class ElevenlabsController:
 
 if __name__ == "__main__":
     e = ElevenlabsController()
-    print(e.list_voices())
+    # print(e.list_voices())
     # print(e.text_to_speech(text="Hallo ich bin Patrick von Blablaland", voice_name="Rachel"))

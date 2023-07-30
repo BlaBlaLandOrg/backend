@@ -2,6 +2,8 @@ import os
 import openai
 from typing import Dict, List
 import json
+import uuid
+
 
 class OpenaiController:
     """
@@ -19,7 +21,12 @@ class OpenaiController:
             messages=self.messages,
         )
         try:
-            return response["choices"][0]["message"]
+            # save for lipsync
+            file_path = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/txt/{uuid.uuid4()}.txt"
+            with open(f"{file_path}", "w") as f:
+                f.write(response["choices"][0]["message"]["content"])
+                f.close()
+            return response["choices"][0]["message"], file_path
         except Exception as e:
             print(e)
             return
