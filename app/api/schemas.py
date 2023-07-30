@@ -16,6 +16,7 @@ class TextToSpeechSchema(BaseModel):
     text: str
     voice_name: str
     model: str = "eleven_multilingual_v1"
+    lip_sync: bool = False
 
 
 ### Whisper

@@ -1,12 +1,19 @@
 import subprocess
+import json
+import os
+import uuid
 
+def create_lip_sync_file(audio_path, text: str):
+    file_path = "lipsync.txt"
 
-def createLipSyncFile(audioPath, textPath):
-    command = f"rhubarb -o ../output.txt {audioPath} -f json -d {textPath} --extendedShapes GHX"
+    with open(f"{file_path}", "w") as f:
+        f.write(text)
+        f.close()
+
+    command = f"rhubarb -o ../output.txt {audio_path} -f json -d {file_path} --extendedShapes GHX"
 
     subprocess.check_output(command.split(' '))
 
-    json_data = {}
     with open('output.txt') as f:
         json_data = json.load(f)
 

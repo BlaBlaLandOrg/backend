@@ -9,7 +9,7 @@ import os
 import uuid
 import base64
 from .models import Recording
-
+from .lipsyncing.rhubarb-lipsyncer-linux.lipsync_controller import create_lip_sync_file
 
 class ElevenlabsController:
 
@@ -24,7 +24,7 @@ class ElevenlabsController:
         return voices
 
     @staticmethod
-    def text_to_speech(text: str, voice_name: str, model: str = "eleven_multilingual_v1"):
+    def text_to_speech(text: str, voice_name: str, model: str = "eleven_multilingual_v1", lip_sync: bool = False):
         audio = generate(
             text=f"{text}",
             voice=f"{voice_name}",
@@ -32,11 +32,13 @@ class ElevenlabsController:
             api_key=get_api_key()
         )
 
-        file_id = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/audio/{voice_name}-{uuid.uuid4()}.mp3"
+        file_id = f"{os.path.abspath(os.getcwd())}/app/api/core/assets/audio/{voice_name}-{uuid.uuid4()}.ogg"
 
         with open(file_id, 'wb') as f:
             f.write(audio)
 
+        if lip_sync:
+            create_lip_sync_file(file_id, text)
         audio_base64 = base64.b64encode(audio).decode()
         return Recording(path=file_id, model=model, bytes=audio_base64)
 
