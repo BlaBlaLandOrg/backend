@@ -46,6 +46,7 @@ jobs:
         -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
         -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
         -e POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
+        -v database:/var/lib/postgresql/data \
         -d -p 5432:5432 postgres:15.3-bullseye"
     - name: Run deploy step
       run: |
