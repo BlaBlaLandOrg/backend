@@ -193,7 +193,7 @@ def characters_mock(db: Session = Depends(get_db)):
     alice = Voice(id=2, name='Elli')
     eve = Voice(id=3, name='Rachel')
     benjamin = Voice(id=4, name='Arnold')
-    surferboy = Voice(id=5, name='Michael')
+    surferboy = Voice(id=5, name='Dave')
 
     db.add(bob)
     db.add(alice)
