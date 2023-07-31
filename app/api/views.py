@@ -204,7 +204,7 @@ def characters_mock(db: Session = Depends(get_db)):
     db.flush()
 
     # create characters
-    char1 = Character(name='Blablaland-Monster', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/78d7f0d9-39a9-48a4-97aa-20d9c8341cc7.jpg"), description='The perfect monster for children',
+    char1 = Character(name='Blablaland-Monster', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/78d7f0d9-39a9-48a4-97aa-20d9c8341cc7.jpg"), description='The perfect monster for children which answers only in 3 short sentences',
                        rating=5, voice_id=bob.id, rating_count=1)
     char2 = Character(name='Grandmother', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/77c3274b-c2d5-40b3-adb1-7578dd1fa8cd.jpg"), description='The perfect grandmother',
                        rating=4, voice_id=alice.id, rating_count=1)
