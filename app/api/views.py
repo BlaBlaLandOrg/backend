@@ -199,6 +199,7 @@ def characters_mock(db: Session = Depends(get_db)):
     db.add(alice)
     db.add(eve)
     db.add(benjamin)
+    db.add(surferboy)
 
     db.flush()
 
