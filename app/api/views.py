@@ -192,7 +192,8 @@ def characters_mock(db: Session = Depends(get_db)):
     bob = Voice(id=1, name='Sam')
     alice = Voice(id=2, name='Elli')
     eve = Voice(id=3, name='Rachel')
-    benjamin = Voice(id=4, name='Domi')
+    benjamin = Voice(id=4, name='Arnold')
+    surferboy = Voice(id=5, name='Michael')
 
     db.add(bob)
     db.add(alice)
@@ -207,7 +208,7 @@ def characters_mock(db: Session = Depends(get_db)):
     char2 = Character(name='Grandmother', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/77c3274b-c2d5-40b3-adb1-7578dd1fa8cd.jpg"), description='The perfect grandmother',
                        rating=4, voice_id=alice.id, rating_count=1)
     char3 = Character(name='Surferboy', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/5c771a9e-2293-4315-be9b-866a381f07fe.jpg"), description='A sexy Surferboy from the Beach',
-                      rating=5, voice_id=eve.id, rating_count=1)
+                      rating=5, voice_id=surferboy.id, rating_count=1)
     char4 = Character(name='Morgan Freeman', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/461b3391-d377-4bdd-a9f1-4f066e31c264.jpg"), description='The legend Morgan Freeman himself',
                       rating=4, voice_id=bob.id, rating_count=1)
     char5 = Character(name='Benjamin', avatar_data=read_image_file(f"{os.path.abspath(os.getcwd())}/app/api/core/assets/img/002340e1-f4d7-400d-bc33-000f1a28dcb9.jpg"), description='Lets talk sports',
